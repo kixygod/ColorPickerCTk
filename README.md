@@ -1,7 +1,9 @@
 #Color Picker
 
-![Dark theme](https://raw.githubusercontent.com/kixygod/ColorPickerCTk/master/screenshots/dark.png)
-![Light theme](https://raw.githubusercontent.com/kixygod/ColorPickerCTk/master/screenshots/light.png)
+<p align="center">
+  <img width="500" src="/screenshots/dark.png">
+  <img width="500" src="/screenshots/light.png">
+</p>
 Данное приложение было разработано на языке Python с помощью библиотеки Custom Tkinter. Основная задача данного приложения помощь в подбирании цветов с любой фотографии.
 Руководство использования:
 
