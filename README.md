@@ -1,4 +1,4 @@
-#Color Picker
+# Color Picker
 
 <p align="center">
   <img width="500" src="/screenshots/dark.png">
@@ -13,7 +13,7 @@
 
 Данное приложение было разработано для учебы, в частности для предмета 'Объектно-ориентированнео программирование', студентом 421-4 группы, Алимьевым Иваном
 
-##How to run
+## How to run
 
 ```bash
 cd ColorPickerCTk
