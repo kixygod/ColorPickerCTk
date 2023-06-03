@@ -112,6 +112,20 @@ class App(customtkinter.CTk):
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+        customtkinter.set_default_color_theme("green")
+
+        # load images with light and dark mode image
+        image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "icons")
+        self.about_image = customtkinter.CTkImage(
+            light_image=Image.open(os.path.join(image_path, "about_dark.png")),
+            dark_image=Image.open(os.path.join(image_path, "about_light.png")),
+            size=(20, 20),
+        )
+        self.color_image = customtkinter.CTkImage(
+            light_image=Image.open(os.path.join(image_path, "color-picker_dark.png")),
+            dark_image=Image.open(os.path.join(image_path, "color-picker_light.png")),
+            size=(20, 20),
+        )
 
         # create navigation frame
         self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
@@ -137,6 +151,7 @@ class App(customtkinter.CTk):
             hover_color=("gray70", "gray30"),
             anchor="w",
             command=self.home_button_event,
+            image=self.color_image,
         )
         self.home_button.grid(row=1, column=0, sticky="ew")
 
@@ -151,6 +166,7 @@ class App(customtkinter.CTk):
             hover_color=("gray70", "gray30"),
             anchor="w",
             command=self.frame_2_button_event,
+            image=self.about_image,
         )
         self.frame_2_button.grid(row=2, column=0, sticky="ew")
 
