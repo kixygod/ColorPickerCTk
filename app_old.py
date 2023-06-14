@@ -6,58 +6,10 @@ import customtkinter
 from PIL import Image
 
 
-class ToplevelWindow(customtkinter.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.geometry("300x150")
-        self.minsize(300, 150)
-        self.maxsize(300, 150)
-        self.title("Color Picker - About")
-
-        self.about_text = customtkinter.CTkTextbox(
-            self,
-            font=(tuple, 14),
-            fg_color="transparent",
-            activate_scrollbars=False,
-        )
-        self.about_text.pack()
-        self.about_text.insert(
-            "0.0",
-            "Данное приложение было разработано для учебы, в частности для предмета 'Объектно-ориентированнео программирование', студентом 421-4 группы, Алимьевым Иваном",
-        )
-        self.about_text.configure(state="disabled")
-
-
-class About:
-    def __init__(self, parent_frame, roditel_frame):
-        self.parent_frame = parent_frame
-        self.roditel_frame = roditel_frame
-        self.frame_2_button = customtkinter.CTkButton(
-            self.parent_frame,
-            corner_radius=0,
-            height=40,
-            border_spacing=10,
-            text="About",
-            text_color=("gray10", "gray90"),
-            hover_color=("gray70", "gray30"),
-            command=self.open_toplevel,
-        )
-        self.frame_2_button.grid(row=3, column=0, sticky="nsew")
-
-        self.toplevel_window = None
-
-    def open_toplevel(self):
-        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-            self.toplevel_window = ToplevelWindow(self.roditel_frame)
-        else:
-            self.toplevel_window.focus()
-        self.toplevel_window.focus()
-
-
 class UserImage:
     def __init__(self, parent_frame):
         self.parent_frame = parent_frame
-        self.right_panel = customtkinter.CTkFrame(self.parent_frame, corner_radius=0)
+        self.right_panel = customtkinter.CTkFrame(self.parent_frame)
         self.right_panel.grid(
             row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew"
         )
@@ -74,19 +26,11 @@ class UserImage:
             row=1, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew"
         )
         self.right_panel.grid_rowconfigure(1, weight=1)
-        self.about_button = About(self.right_panel, parent_frame)
-        self.appearance_mode_menu = customtkinter.CTkOptionMenu(
-            self.right_panel,
-            values=["Light", "Dark", "System"],
-            command=self.change_appearance_mode_event,
-        )
-        self.appearance_mode_menu.set("System")
-        self.appearance_mode_menu.grid(row=2, column=0, padx=20, pady=20, sticky="s")
         self.scrollable_frame.grid_columnconfigure(0, weight=1)
         self.colors = []
         self.scrollable_frame_boxes = []
 
-        self.photo_frame = customtkinter.CTkFrame(self.parent_frame, corner_radius=0)
+        self.photo_frame = customtkinter.CTkFrame(self.parent_frame)
         self.photo_frame.grid(
             row=0, column=0, padx=(20, 0), pady=(20, 20), sticky="nsew"
         )
@@ -99,9 +43,6 @@ class UserImage:
         self.image_label.bind("<Button-1>", self.get_color)
         self.index_line = 0
 
-    def change_appearance_mode_event(self, new_appearance_mode):
-        customtkinter.set_appearance_mode(new_appearance_mode)
-
     def load_image(self):
         self.file_path = filedialog.askopenfilename(
             filetypes=[("Изображения", "*.png;*.jpg;*.jpeg")]
@@ -111,8 +52,6 @@ class UserImage:
 
             self.parent_frame_width = self.photo_frame.winfo_width()
             self.parent_frame_height = self.photo_frame.winfo_height()
-            print(f"self.parent_frame_width = {self.parent_frame_width}")
-            print(f"self.parent_frame_height = {self.parent_frame_height}")
             self.parent_frame_aspect_ratio = (
                 self.parent_frame_width / self.parent_frame_height
             )
@@ -138,17 +77,11 @@ class UserImage:
             self.resized_image = self.image.resize(
                 (self.desired_width, self.desired_height), Image.BICUBIC
             )
-            print(self.desired_width)
-            print(self.desired_height)
 
     def get_color(self, event):
         if self.file_path:
             x = event.x
             y = event.y
-            print(f"x = {x}")
-            print(f"y = {y}")
-            print(f"image_label_x = {self.image_label.winfo_x()}")
-            print(f"image_label_y = {self.image_label.winfo_y()}")
             rgb = self.resized_image.convert("RGB").getpixel((x, y))
             color_code = "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
             self.colors.append(color_code)
@@ -194,6 +127,56 @@ class App(customtkinter.CTk):
             size=(20, 20),
         )
 
+        # create navigation frame
+        self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.navigation_frame.grid(row=0, column=0, sticky="nsew")
+        self.navigation_frame.grid_rowconfigure(4, weight=1)
+
+        self.navigation_frame_label = customtkinter.CTkLabel(
+            self.navigation_frame,
+            text="Color Picker",
+            compound="left",
+            font=customtkinter.CTkFont(size=15, weight="bold"),
+        )
+        self.navigation_frame_label.grid(row=0, column=0, padx=20, pady=20)
+
+        self.home_button = customtkinter.CTkButton(
+            self.navigation_frame,
+            corner_radius=0,
+            height=40,
+            border_spacing=10,
+            text="Pick the color",
+            fg_color="transparent",
+            text_color=("gray10", "gray90"),
+            hover_color=("gray70", "gray30"),
+            anchor="w",
+            command=self.home_button_event,
+            image=self.color_image,
+        )
+        self.home_button.grid(row=1, column=0, sticky="ew")
+
+        self.frame_2_button = customtkinter.CTkButton(
+            self.navigation_frame,
+            corner_radius=0,
+            height=40,
+            border_spacing=10,
+            text="About",
+            fg_color="transparent",
+            text_color=("gray10", "gray90"),
+            hover_color=("gray70", "gray30"),
+            anchor="w",
+            command=self.frame_2_button_event,
+            image=self.about_image,
+        )
+        self.frame_2_button.grid(row=2, column=0, sticky="ew")
+
+        self.appearance_mode_menu = customtkinter.CTkOptionMenu(
+            self.navigation_frame,
+            values=["Light", "Dark", "System"],
+            command=self.change_appearance_mode_event,
+        )
+        self.appearance_mode_menu.grid(row=6, column=0, padx=20, pady=20, sticky="s")
+
         # create home frame
         self.home_frame = customtkinter.CTkFrame(
             self, corner_radius=0, fg_color="transparent"
@@ -202,15 +185,62 @@ class App(customtkinter.CTk):
         self.home_frame.grid_columnconfigure(0, weight=1)
         self.user_image = UserImage(self.home_frame)
 
+        # create second frame
+        self.second_frame = customtkinter.CTkFrame(
+            self, corner_radius=0, fg_color="transparent"
+        )
+        self.second_frame.grid_rowconfigure(0, weight=1)
+        self.second_frame.grid_columnconfigure(0, weight=1)
+        self.about_frame = customtkinter.CTkFrame(self.second_frame, width=600)
+        self.about_frame.grid_rowconfigure(0, weight=1)
+        self.about_frame.grid_columnconfigure(0, weight=1)
+        self.about_frame.grid(
+            row=0, column=0, columnspan=3, padx=20, pady=20, sticky="ns"
+        )
+        self.about_text = customtkinter.CTkTextbox(
+            self.about_frame,
+            width=900,
+            font=(tuple, 18),
+            fg_color="transparent",
+            activate_scrollbars=False,
+        )
+        self.about_text.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.about_text.insert(
+            "0.0",
+            "Данное приложение было разработано на языке Python с помощью библиотеки Custom Tkinter.\nОсновная задача данного приложения помощь в подбирании цветов с любой фотографии.\nРуководство использования:\n1. Перейдите во вкладку 'Pick the color';\n2. Далее нажмите на кнопку в правом верхнем углу 'Upload photo';\n3. После этого мы можете кликнуть в любом месте загруженной фотографии, чтобы узнать код цвета.\n\nДанное приложение было разработано для учебы, в частности для предмета 'Объектно-ориентированнео программирование', студентом 421-4 группы, Алимьевым Иваном",
+        )
+        self.about_text.configure(state="disabled")
+
         # select default frame
         self.select_frame_by_name("home")
 
     def select_frame_by_name(self, name):
+        # set button color for selected button
+        self.home_button.configure(
+            fg_color=("gray75", "gray25") if name == "home" else "transparent"
+        )
+        self.frame_2_button.configure(
+            fg_color=("gray75", "gray25") if name == "frame_2" else "transparent"
+        )
+
+        # show selected frame
         if name == "home":
             self.home_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.home_frame.grid_forget()
+        if name == "frame_2":
+            self.second_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.second_frame.grid_forget()
 
     def home_button_event(self):
         self.select_frame_by_name("home")
+
+    def frame_2_button_event(self):
+        self.select_frame_by_name("frame_2")
+
+    def change_appearance_mode_event(self, new_appearance_mode):
+        customtkinter.set_appearance_mode(new_appearance_mode)
 
 
 if __name__ == "__main__":
